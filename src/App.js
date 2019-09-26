@@ -8,6 +8,7 @@ class App extends Component{
         super(props);
         this.state = {
             value: '',
+            load: false,
             nextId: 6,
             points: [
                 {
@@ -38,6 +39,7 @@ class App extends Component{
         this.setState({ value: +e.target.value });
     }
     handleNewPoint(e) {
+        this.setState({load: false})
         this.setState({
             points: [...this.state.points, { size: this.state.value, id: this.state.nextId }],
             nextId: this.state.nextId + 1,
@@ -45,11 +47,15 @@ class App extends Component{
         })
         e.preventDefault();
     }
+    
+    finishload(){
+        this.setState({load: true})
+    }
 
     render() {
         return (
             <div className="App">
-                <Circles points={[...this.state.points]} />
+                <Circles points={[...this.state.points]} load= {() => this.state.load} finishload={() => this.finishload()}/>
                 <NewPointForm value={this.state.value} handleChange={this.handleFormChange} handleSubmit={this.handleNewPoint}/>
             </div>
         );
