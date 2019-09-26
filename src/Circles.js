@@ -26,19 +26,31 @@ class Circles extends Component {
   }
   
   componentDidMount() {
+    console.log("componentDidMount")
+
     this.container = d3.select(this.refs.container);
     this.processPoints()
     this.renderCircles();
     simulation.nodes(this.points).alpha(0.9).restart();
+    this.props.finishload()
+
   }
-  
+  shouldComponentUpdate(){
+    return !this.props.load()
+  }
   componentDidUpdate(prevProps, prevState) {
-    this.points = this.props.points;
-    this.processPoints()
-    this.renderCircles();
-    simulation.nodes(this.points).alpha(0.9).restart();
+    console.log("componentDidUpdate")
+    if (!this.props.load()){
+      this.points = this.props.points;
+      this.processPoints()
+      this.renderCircles();
+      simulation.nodes(this.points).alpha(0.9).restart();
+      this.props.finishload()
+    }
   }
   processPoints() {
+    console.log('processPoints');
+
     this.points = _.map(this.props.points, point => {
       return Object.assign(point, {
         focusX: width / 2,
@@ -49,7 +61,8 @@ class Circles extends Component {
     });
   }
   renderCircles() {
-    
+    console.log('renderCircles');
+
     this.circles = this.container.selectAll("circle")
       .data(this.points);
     this.circles.exit().remove();
@@ -71,6 +84,7 @@ class Circles extends Component {
   }
 
   render() {
+    console.log('render')
     return (
       <svg width={width} height={height} ref="container">
       </svg>
